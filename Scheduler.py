@@ -7,15 +7,15 @@ import csv
 
 class GetTag():
     def __init__(self):
-        self.Tools = Tools()
-        #self.Download = Download()
+        self.tools = Tools()
+        self.download = Download()
         self.failed_urls = []
+
     def pro_list(self, TagName, url, pages):
         url_list = []
         for i in range(1, pages):
             page_urls = url + "&page=" + str(i)
-           #c = super(GetTag, self).parse(page_urls)
-            c = Download.parse(page_urls)
+            c = self.download.parse(page_urls)
             html = c[0]
             status = c[1]
 
@@ -33,21 +33,21 @@ class GetTag():
             TagName = str(TagName)
             TagName = "".join(TagName).strip()
 
-            pid = Tools.get_id(self, each)[0]
+            pid = self.tools.get_id(each)[0]
             pid = int(pid)
-            #fsaad = Tools.add_url(self, each)
+            url = self.tools.add_url(each)
             # 判断产品表中是否存在tag的产品，如果不存在，就将其写入products
             # 如果存在, 判断是否存在parent_id = 0
-            Tools.ProductCheckPid(self,pid)
-            ProductCheckPid = Tools.ProductCheckPid(self,pid)
+            self.tools.ProductCheckPid(pid)
+            ProductCheckPid = self.tools.ProductCheckPid(pid)
             if ProductCheckPid == False:
                 pro_spider = GetProduct()
                 pro_spider.resolution(url)
             elif ProductCheckPid != 0:
                 pid = str(ProductCheckPid)
-                url = Tools.relace_pid(pid, url)
+                url = self.tools.relace_pid(pid, url)
 
-            if Tools.TagNameCheck(TagName, pid) == True:
+            if self.tools.TagNameCheck(TagName, pid) == True:
                 self.saveData(TagName, pid, url)
                 # print("kaishi")
             else:
@@ -56,7 +56,7 @@ class GetTag():
 
     def saveData(self, TagName, pid, url):
         table = "m2b_tags"
-        db = Tools.connect_mysql()
+        db = self.tools.connect_mysql()
         cursor = db.cursor()
 
         sql = 'INSERT INTO {table} ' \

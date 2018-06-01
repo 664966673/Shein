@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from tool import tool
+from tool.tools import Tools
 import pymysql
+tools = Tools()
 def get_data(parent_id, pid, cid, url, title, price, orig_price, sku, review, img_urls ,sizes):
 	#print(len(img_urls))
 	pid = int(pid)
@@ -12,7 +13,7 @@ def get_data(parent_id, pid, cid, url, title, price, orig_price, sku, review, im
 def mysql(parent_id, pid, cid, url, title, price, orig_price, sku, review, img_urls ,sizes):
 
 	table= "m2b_products"
-	db = tool.tools.connect_mysql()
+	db = tools.connect_mysql()
 	cursor = db.cursor()
 	img_num = 1
 	size_num = 1
@@ -26,7 +27,7 @@ def mysql(parent_id, pid, cid, url, title, price, orig_price, sku, review, img_u
 	re_size =[]
 	#图片链接
 	for img_url in img_urls:
-		img_url = tool.tools.re_img_url(img_url)
+		img_url = tools.re_img_url(img_url)
 		img_key = "img_url_"+str(img_num)
 		img_keys.append(img_key)
 		re_img_urls.append('"'+img_url+'"')

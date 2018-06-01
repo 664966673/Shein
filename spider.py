@@ -7,19 +7,19 @@ import random
 import time
 from lxml import etree
 import json
-from Download import Download
+from Download.Download import Download
+from DataProcess import data_process,son_data_process
 
 
-
-class GetProduct(Download.Download):
+class GetProduct(Download):
 
     def detail(self, file):
         pro_num = 1
-        urls = Tools.get_url(file)
+        urls = self.tools.get_url(file)
         for url in urls:
             self.resolution(url)
             print(">>" + str(pro_num) + "------product-over--------")
-            ProductCheck = Tools.ProductCheck(url)
+            ProductCheck = self.tools.ProductCheck(url)
             if ProductCheck == 0:
                 time.sleep(random.choice(range(5, 10)))
             pro_num += 1
@@ -30,16 +30,16 @@ class GetProduct(Download.Download):
         c = super(GetProduct, self).parse(url)
         html = c[0]
         status = c[1]
-        ProductCheck = Tools.ProductCheck(url)
+        ProductCheck = self.tools.ProductCheck(url)
         if ProductCheck == 0:
             if status == 200:
                 tree = etree.HTML(html)
-                pid = Tools.get_id(url)[0]
-                cid = Tools.get_id(url)[1]
+                pid = self.tools.get_id(url)[0]
+                cid = self.tools.get_id(url)[1]
                 title = tree.xpath("//div[@class='goodsd-right col-sm-5']//h4/text()")
                 title = "".join(title).strip()
-                price = Tools.get_price(pid)[0]
-                orig_price = Tools.get_price(pid)[1]
+                price = self.tools.get_price(pid)[0]
+                orig_price = self.tools.get_price(pid)[1]
                 description = tree.xpath("//div[@class='goodsd-right col-sm-5']//div[@class='kv']/div//text()")
                 description = [x.strip() for x in description if x != '\n          ']
                 description = [x for x in description if x != '']
@@ -65,7 +65,7 @@ class GetProduct(Download.Download):
                 sku = "".join(sku).replace(' ', '').replace('\n', '').replace('SKU:', '')
                 review = tree.xpath("//div[@class='comments']/a/span/text()")
                 review = "".join(review).strip('\n').replace(' ', '')
-                sizes = Tools.get_size(pid)
+                sizes = self.tools.get_size(pid)
                 if review == '':
                     review = 0
 
@@ -75,7 +75,7 @@ class GetProduct(Download.Download):
                 color_urls = tree.xpath("//div[@class='opt-color']/a/@href")
                 color_imgs = tree.xpath("//div[@class='opt-color']/a/@style")
                 # 判断是否有相同的id
-                ProductCheckSku = Tools.ProductCheck(sku)
+                ProductCheckSku = self.tools.ProductCheck(sku)
                 if ProductCheckSku == 0:
                     # 判断是否有多个颜色
                     this_url = url
@@ -92,21 +92,21 @@ class GetProduct(Download.Download):
              print("-----Parent-url-repetition-----")
 
     def son_resolution(self, color_url, parent_pid):
-        url = Tools.add_url(color_url)
+        url = self.tools.add_url(color_url)
         c = super(GetProduct, self).parse(url)
         html = c[0]
         status = c[1]
-        ProductCheck = Tools.ProductCheck(url)
+        ProductCheck = self.tools.ProductCheck(url)
         if ProductCheck == 0:
             if status == 200:
                 tree = etree.HTML(html)
                 parent_id = int(parent_pid)
-                pid = Tools.get_id(url)[0]
-                cid = Tools.get_id(url)[1]
+                pid = self.tools.get_id(url)[0]
+                cid = self.tools.get_id(url)[1]
                 title = tree.xpath("//div[@class='goodsd-right col-sm-5']//h4/text()")
                 title = "".join(title).strip()
-                price = Tools.get_price(pid)[0]
-                orig_price = Tools.get_price(pid)[1]
+                price = self.tools.get_price(pid)[0]
+                orig_price = self.tools.get_price(pid)[1]
                 sku = tree.xpath("//div[@class='summary']/span[@class='sku']/text()")
                 sku = "".join(sku).replace(' ', '').replace('\n', '').replace('SKU:', '')
                 review = tree.xpath("//div[@class='comments']/a/span/text()")
@@ -114,8 +114,8 @@ class GetProduct(Download.Download):
                 if review == '':
                     review = 0
                 img_urls = tree.xpath("//div[@class='swiper-wrapper']/div/img/@data-src")
-                sizes = Tools.get_size(pid)
-                ProductCheckSku = Tools.ProductCheck(sku)
+                sizes = self.tools.get_size(pid)
+                ProductCheckSku = self.tools.ProductCheck(sku)
                 if ProductCheckSku == 0:
                     son_data_process.get_data(parent_id, pid, cid, url, title, price, orig_price, sku, review, img_urls,
                                               sizes)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from tool import tool
+from tool.tools import Tools
 import pymysql
+tools = Tools()
 def get_data(pid, cid, url, title, price, orig_price, description, size_fits, sku, review, img_urls, color_urls, color_imgs, sizes):
 	#print(len(img_urls))
 	pid = int(pid)
@@ -16,7 +17,7 @@ def get_data(pid, cid, url, title, price, orig_price, description, size_fits, sk
 def mysql(pid, cid, url, title, price, orig_price, description, size_fits, sku, review, img_urls, color_urls, color_imgs, sizes):
 
 	table= "m2b_products"
-	db = tool.tools.connect_mysql()
+	db = tools.connect_mysql()
 	cursor = db.cursor()
 	img_num = 1
 	color_num = 1
@@ -36,7 +37,7 @@ def mysql(pid, cid, url, title, price, orig_price, description, size_fits, sku, 
 	re_c_img = []
 	#图片链接
 	for img_url in img_urls:
-		img_url = tool.tools.re_img_url(img_url)
+		img_url = tools.re_img_url(img_url)
 		img_key = "img_url_"+str(img_num)
 		img_keys.append(img_key)
 		re_img_urls.append('"'+img_url+'"')
@@ -49,7 +50,7 @@ def mysql(pid, cid, url, title, price, orig_price, description, size_fits, sku, 
 	#颜色链接
 	if len(color_urls) !=0:
 		for color_url in  color_urls:
-			color_url = tool.tools.add_url(color_url)
+			color_url = tools.add_url(color_url)
 			color_key = "color_url_"+str(color_num)
 			color_keys.append(color_key)
 			re_color_urls.append('"'+color_url+'"')
@@ -60,7 +61,7 @@ def mysql(pid, cid, url, title, price, orig_price, description, size_fits, sku, 
 
 		for color_img in color_imgs:
 			color_img = str(color_img.encode('utf-8'))
-			color_img_url = tool.tools.cut_url(color_img)
+			color_img_url = tools.cut_url(color_img)
 			c_img_key = "color_img_" + str(c_img_num)
 			c_img_keys.append(c_img_key)
 			re_c_img.append('"'+color_img_url+'"')

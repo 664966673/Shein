@@ -9,6 +9,7 @@ class Download(object):
     def __init__(self):
         self.header = setting.headers
         self.failed_urls = []
+        self.tools = Tools()
 
     def parse(self, url):
         try:
