@@ -8,6 +8,7 @@ import json
 
 #获取需要爬取的产品url
 class Tools(object):
+
     def __init__(self):
         self.url = 'https://www.shein.com'
         self.pro_list = []
@@ -45,7 +46,7 @@ class Tools(object):
             return self.pro_list
 
     #完善残缺的url
-    def add_url(self,xurl):
+    def add_url(self, xurl):
         newurl = self.url +xurl
         return newurl
 
@@ -160,4 +161,4 @@ class Tools(object):
         parent_url = re.sub(r'-p-(\d+)*', '-p-'+pid, url)
         return parent_url
 
-tools  = Tools()
+
