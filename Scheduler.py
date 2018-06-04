@@ -85,5 +85,6 @@ class GetTag():
 
             print("all over")
 
-c = GetTag()
-c.getTag(pages=2, tag='tag')
+if __name__ == '__main__':
+    c = GetTag()
+    c.getTag(pages=2, tag='tag')
